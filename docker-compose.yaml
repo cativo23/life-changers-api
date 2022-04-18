@@ -1,0 +1,42 @@
+#Created by @cativo23 <cativo23.kt@gmail.com>
+
+version: '3'
+
+services:
+  api:
+    container_name: life-changers-api
+    image: life-changers/api:latest
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    working_dir: /usr/src/app
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - life-changers
+  
+  mysql:
+    container_name: life-changers-db
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=life_changers
+      - MYSQL_USER=life_changers
+      - MYSQL_PASSWORD=life_changers
+    volumes:
+      - 'life-changers-mysql:/var/lib/mysql'
+    networks:
+      - life-changers
+
+networks:
+  life-changers:
+    driver: bridge
+
+volumes:
+  life-changers-mysql:
+    driver: local
