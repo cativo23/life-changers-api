@@ -22,7 +22,7 @@ services:
     container_name: life-changers-db
     image: mysql:8
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=life_changers
@@ -36,6 +36,7 @@ services:
 networks:
   life-changers:
     driver: bridge
+    name: life-changers
 
 volumes:
   life-changers-mysql:
