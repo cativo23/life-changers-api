@@ -41,3 +41,18 @@ model Donation {
   @@map("donations")
 }
 
+model Contact {
+  id        Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name      String
+  email     String
+  phone     String
+  role      String
+  message   String @db.Text
+
+  @@map("contacts")
+}
+
