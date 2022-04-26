@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import * as moment from 'moment';
@@ -10,7 +10,11 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwt: JwtService, private config: ConfigService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private config: ConfigService,
+  ) {}
 
   async login(dto: AuthDto) {
     const user = await this.prisma.user.findUnique({
@@ -54,25 +58,26 @@ export class AuthService {
   }
 
   async signToken(user: User): Promise<{
-    access_token: string,
-    expires_at: string,
+    access_token: string;
+    expires_at: string;
   }> {
-
     const payload = {
       sub: user.id,
       email: user.email,
     };
 
-    const secret = this.config.get('JWT_SECRET')
+    const secret = this.config.get('JWT_SECRET');
 
-    const expiresIn = this.config.get('JWT_EXPIRATION')
+    const expiresIn = this.config.get('JWT_EXPIRATION');
 
     const token = await this.jwt.signAsync(payload, {
       expiresIn: expiresIn,
       secret: secret,
-    })
+    });
 
-    const expirationDate = moment(moment.now()).add(expiresIn, 'days').format('d/MM/yyyy HH:mm:ss')
+    const expirationDate = moment(moment.now())
+      .add(expiresIn, 'days')
+      .format('d/MM/yyyy HH:mm:ss');
 
     return {
       access_token: token,
