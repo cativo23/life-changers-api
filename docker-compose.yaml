@@ -17,6 +17,16 @@ services:
       - .:/usr/src/app
     networks:
       - life-changers
+      - web
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.life.rule=Host(`life.${DOMAIN}`)"
+    - "traefik.http.routers.life.entrypoints=websecure"
+    - "traefik.http.services.life.loadbalancer.server.port=3000"
+    - "traefik.http.routers.life.service=life"
+    - "traefik.http.routers.life.tls.certresolver=lets-encrypt"
+    - "traefik.http.routers.life.tls=true"
+    - "traefik.docker.network=web"
   
   mysql:
     container_name: life-changers-db
@@ -24,19 +34,27 @@ services:
     ports:
       - "3307:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=life_changers
-      - MYSQL_USER=life_changers
-      - MYSQL_PASSWORD=life_changers
+      - MYSQL_ROOT_PASSWORD='${DB_PASSWORD}''
+      - MYSQL_DATABASE='${DB_DATABASE}'
+      - MYSQL_USER='${DB_USERNAME}'
+      - MYSQL_PASSWORD='${DB_PASSWORD}'
     volumes:
       - 'life-changers-mysql:/var/lib/mysql'
     networks:
       - life-changers
+    labels:
+    - "traefik.enable=false"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+      retries: 3
+      timeout: 5s
 
 networks:
   life-changers:
     driver: bridge
     name: life-changers
+  web:
+    external: true
 
 volumes:
   life-changers-mysql:
