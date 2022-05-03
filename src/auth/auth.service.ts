@@ -1,12 +1,14 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto } from './dto';
+import { AuthDto, LoginDto } from './dto';
 import * as argon from 'argon2';
 import * as moment from 'moment';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
+import { UserService } from '../user/user.service';
+import { CreateUserDto } from '../user/dto';
 
 @Injectable()
 export class AuthService {
@@ -14,9 +16,10 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private user: UserService,
   ) {}
 
-  async login(dto: AuthDto) {
+  async login(dto: LoginDto){
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -36,25 +39,14 @@ export class AuthService {
     return this.signToken(user);
   }
 
-  async register(dto: AuthDto) {
-    try {
-      const hash = await argon.hash(dto.password);
+  async register(dto: CreateUserDto) {
+    const hash = await argon.hash(dto.password);
 
-      const user = await this.prisma.user.create({
-        data: {
-          email: dto.email,
-          password: hash,
-        },
-      });
+    dto.password = hash;
 
-      return user;
-    } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ForbiddenException('Email already in use');
-        }
-      }
-    }
+    const user = await this.user.create(dto);
+
+    return user;
   }
 
   async signToken(user: User): Promise<{

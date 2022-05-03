@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { DonationModule } from './donation/donation.module';
 import { ContactModule } from './contact/contact.module';
+import { StripeService } from './stripe/stripe.service';
+import { StripeModule } from './stripe/stripe.module';
 @Module({
   imports: [
     AuthModule,
@@ -16,7 +18,8 @@ import { ContactModule } from './contact/contact.module';
     }),
     DonationModule,
     ContactModule,
+    StripeModule,
   ],
-  controllers: [HomeController],
+  controllers: [HomeController]
 })
 export class AppModule {}

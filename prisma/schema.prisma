@@ -11,24 +11,30 @@ datasource db {
 }
 
 model User {
-  id        Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  
-  email     String @unique
-  password  String
+
+  email    String @unique
+  password String
 
   first_name String?
   last_name  String?
 
+  stripe_costumer_id String?
+
   donations Donation[]
+
+  institutions Institution[]
+
+  payments Payment[]
 
   @@map("users")
 }
 
 model Donation {
-  id        Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -36,23 +42,58 @@ model Donation {
   amount Decimal @default(0.0)
 
   userId Int
-  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("donations")
 }
 
 model Contact {
-  id        Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  name      String
-  email     String
-  phone     String
-  role      String
-  message   String @db.Text
+  name    String
+  email   String
+  phone   String
+  role    String
+  message String @db.Text
 
   @@map("contacts")
 }
 
+model Institution {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name    String
+  email   String
+  phone   String
+  address String
+  image   String
+
+  adminId Int
+  admin   User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@map("institutions")
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  amunt     Decimal
+  status    String
+  method    String
+  currency  String
+  method_id String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
