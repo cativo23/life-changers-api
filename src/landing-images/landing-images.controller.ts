@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpException, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpException, Res, Query } from '@nestjs/common';
 import { LandingImagesService } from './landing-images.service';
 import { CreateLandingImageDto } from './dto/create-landing-image.dto';
 import { UpdateLandingImageDto } from './dto/update-landing-image.dto';
@@ -35,8 +35,8 @@ export class LandingImagesController {
   }
 
   @Get()
-  findAll() {
-    return this.landingImagesService.findAll();
+  findAll(@Query('page') page: number, @Query('limit') perPage: number) {
+    return this.landingImagesService.findAll(page, perPage);
   }
 
   @Get(':id')

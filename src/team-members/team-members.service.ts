@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { UpdateTeamMemberDto } from './dto/update-team-member.dto';
 import * as fs from 'fs';
+import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
 export class TeamMembersService {
@@ -20,8 +21,18 @@ export class TeamMembersService {
     return newMember;;
   }
 
-  async findAll() {
-    return await this.prisma.institution.findMany();
+  async findAll(page: number, perPage: number) {
+    const paginate = createPaginator({ perPage: perPage });
+    
+    return await paginate<TeamMember, Prisma.TeamMemberFindManyArgs>(
+      this.prisma.institution,
+      {
+        orderBy: {
+          id: 'desc',
+        }
+      },
+      { page: page}
+    );
   }
 
   async findOne(memberUniqeInput: Prisma.TeamMemberWhereUniqueInput): Promise<TeamMember | null> {

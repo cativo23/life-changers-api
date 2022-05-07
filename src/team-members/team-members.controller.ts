@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Res, Query } from '@nestjs/common';
 import { TeamMembersService } from './team-members.service';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { UpdateTeamMemberDto } from './dto/update-team-member.dto';
@@ -30,8 +30,8 @@ export class TeamMembersController {
   }
 
   @Get()
-  findAll() {
-    return this.teamMembersService.findAll();
+  async findAll(@Query('page') page: number, @Query('limit') perPage: number) {
+    return await this.teamMembersService.findAll(page, perPage);
   }
 
   @Get(':id')
