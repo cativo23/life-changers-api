@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { UserExists } from '../decorator';
 
 export class CreateUserDto {
     @IsString()
@@ -11,6 +12,7 @@ export class CreateUserDto {
     
     @IsEmail()
     @IsNotEmpty()
+    @UserExists()
     email: string;
     
     @IsString()

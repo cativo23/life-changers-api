@@ -8,6 +8,7 @@ import { DonationModule } from './donation/donation.module';
 import { ContactModule } from './contact/contact.module';
 import { StripeService } from './stripe/stripe.service';
 import { StripeModule } from './stripe/stripe.module';
+import { InstitutionsModule } from './institutions/institutions.module';
 @Module({
   imports: [
     AuthModule,
@@ -19,6 +20,7 @@ import { StripeModule } from './stripe/stripe.module';
     DonationModule,
     ContactModule,
     StripeModule,
+    InstitutionsModule,
   ],
   controllers: [HomeController]
 })
