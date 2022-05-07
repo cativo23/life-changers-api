@@ -91,6 +91,23 @@ model LandingImages {
   image   String
 }
 
+model SiteInfo {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  about_us String @db.Text
+
+  mission String @db.Text
+
+  vision String @db.Text
+
+  values String @db.Text
+
+  @@map("site_info")
+}
+
 model Contact {
   id Int @id @default(autoincrement())
 

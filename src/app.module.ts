@@ -11,6 +11,7 @@ import { InstitutionsModule } from './institutions/institutions.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { LandingImagesModule } from './landing-images/landing-images.module';
 import { ImagesControllerController } from './images-controller/images-controller.controller';
+import { SiteInfoModule } from './site-info/site-info.module';
 @Module({
   imports: [
     AuthModule,
@@ -25,6 +26,7 @@ import { ImagesControllerController } from './images-controller/images-controlle
     StripeModule,
     InstitutionsModule,
     LandingImagesModule,
+    SiteInfoModule,
   ],
   controllers: [HomeController, ImagesControllerController]
 })

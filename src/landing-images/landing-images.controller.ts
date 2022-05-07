@@ -23,7 +23,7 @@ export class LandingImagesController {
     }),
     fileFilter: imageFileFilter,
   }))
-  create(
+  async create(
     @UploadedFile() file,
     @Body() createLandingImageDto: CreateLandingImageDto,
     @Res() response: Response) { 
