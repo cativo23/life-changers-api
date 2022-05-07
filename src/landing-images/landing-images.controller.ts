@@ -31,7 +31,7 @@ export class LandingImagesController {
       throw new HttpException('File is required', 400);
     }
     const created = await this.landingImagesService.create(createLandingImageDto, file.path);
-    response.status(201).json(created);
+    return response.status(201).json(created);
   }
 
   @Get()

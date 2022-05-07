@@ -12,6 +12,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { LandingImagesModule } from './landing-images/landing-images.module';
 import { ImagesControllerController } from './images-controller/images-controller.controller';
 import { SiteInfoModule } from './site-info/site-info.module';
+import { TeamMembersModule } from './team-members/team-members.module';
 @Module({
   imports: [
     AuthModule,
@@ -27,6 +28,7 @@ import { SiteInfoModule } from './site-info/site-info.module';
     InstitutionsModule,
     LandingImagesModule,
     SiteInfoModule,
+    TeamMembersModule,
   ],
   controllers: [HomeController, ImagesControllerController]
 })

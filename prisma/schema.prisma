@@ -134,11 +134,26 @@ model Institution {
   phone   String
   address String
   image   String
+  description String @db.Text
+  number_students Int
 
   adminId Int
   admin   User @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@map("institutions")
+}
+
+model TeamMember {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name    String
+  position   String
+  image   String
+
+  @@map("team_members")
 }
 
 model Payment {

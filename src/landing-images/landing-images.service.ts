@@ -40,7 +40,7 @@ export class LandingImagesService {
     });
 
     if(file) {
-      this.delteImage(previous.image);
+      this.deleteImage(previous.image);
     }
 
     return this.prisma.landingImages.update({
@@ -62,8 +62,8 @@ export class LandingImagesService {
           id: +id,
         }
       });
-      
-      this.delteImage(previous.image);
+
+      this.deleteImage(previous.image);
 
       return await this.prisma.landingImages.delete({
         where: {
@@ -75,7 +75,7 @@ export class LandingImagesService {
     }
   }
 
-  delteImage(path: string) {
+  deleteImage(path: string) {
       try {
         fs.unlinkSync(path);
         //file removed

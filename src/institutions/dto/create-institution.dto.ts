@@ -16,9 +16,11 @@ export class CreateInstitutionDto {
     address: string;
 
     @IsString()
-    image: string;
+    description: string;
+    
+    @IsString()
+    number_students: string;
 
-    @IsNumber()
-    @UserExistsId()
+    @IsString()
     adminId: number;
 }

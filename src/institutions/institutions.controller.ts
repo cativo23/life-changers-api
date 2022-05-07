@@ -1,15 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, Res, HttpException, UseInterceptors } from '@nestjs/common';
 import { InstitutionsService } from './institutions.service';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
+import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { destinationPath, editFileName, imageFileFilter } from '../utils/file-uploading.utils';
 
-@Controller('institutions')
+@Controller({
+  path: 'institutions',
+  version: '1',
+})
 export class InstitutionsController {
   constructor(private readonly institutionsService: InstitutionsService) {}
 
   @Post()
-  create(@Body() createInstitutionDto: CreateInstitutionDto) {
-    return this.institutionsService.create(createInstitutionDto);
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: destinationPath,
+      filename: editFileName,
+    }),
+    fileFilter: imageFileFilter,
+  }))
+  async create(
+    @Body() createInstitutionDto: CreateInstitutionDto,
+    @UploadedFile() file,
+    @Res() response: Response) {
+      if(!file) {
+        throw new HttpException('File is required', 400);
+      }
+      
+      const created = await this.institutionsService.create(createInstitutionDto, file.path);
+      response.status(201).json(created);
   }
 
   @Get()
@@ -28,7 +50,8 @@ export class InstitutionsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.institutionsService.remove(+id);
+  async remove(@Param('id') id: string, @Res() response: Response) {
+    const deleted = await this.institutionsService.remove(+id);
+    return response.status(200).json(deleted);
   }
 }
