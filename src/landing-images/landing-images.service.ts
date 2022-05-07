@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateLandingImageDto } from './dto/create-landing-image.dto';
 import { UpdateLandingImageDto } from './dto/update-landing-image.dto';
 import * as fs from 'fs';
+import { createPaginator } from 'prisma-pagination';
+import { LandingImages, Prisma } from '@prisma/client';
 
 @Injectable()
 export class LandingImagesService {
@@ -20,8 +22,18 @@ export class LandingImagesService {
     return landingImage;
   }
 
-  findAll() {
-    return this.prisma.landingImages.findMany();
+  async findAll(page: number, perPage: number) {
+    const paginate = createPaginator({ perPage: perPage });
+    
+    return await paginate<LandingImages, Prisma.LandingImagesFindManyArgs>(
+      this.prisma.institution,
+      {
+        orderBy: {
+          id: 'desc',
+        }
+      },
+      { page: page}
+    );
   }
 
   findOne(id: number) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, Res, HttpException, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, Res, HttpException, UseInterceptors, Query } from '@nestjs/common';
 import { InstitutionsService } from './institutions.service';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
@@ -35,8 +35,8 @@ export class InstitutionsController {
   }
 
   @Get()
-  findAll() {
-    return this.institutionsService.findAll();
+  async findAll(@Query('page') page: number, @Query('limit') perPage: number) {
+    return await this.institutionsService.findAll(page, perPage);
   }
 
   @Get(':id')

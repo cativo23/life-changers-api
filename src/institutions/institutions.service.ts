@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
 import * as fs from 'fs';
+import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
 export class InstitutionsService {
@@ -29,8 +30,18 @@ export class InstitutionsService {
     return newInstitution;
   }
 
-  async findAll() {
-    return await this.prisma.institution.findMany();
+  async findAll(page: number, perPage: number){
+    const paginate = createPaginator({ perPage: perPage });
+    
+    return await paginate<Institution, Prisma.InstitutionFindManyArgs>(
+      this.prisma.institution,
+      {
+        orderBy: {
+          id: 'desc',
+        }
+      },
+      { page: page}
+    );
   }
 
   async findOne(institutionUniqueInput: Prisma.InstitutionWhereUniqueInput): Promise<Institution | null> {
