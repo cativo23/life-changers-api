@@ -19,10 +19,17 @@ model User {
   email    String @unique
   password String
 
-  first_name String?
-  last_name  String?
+  first_name String
+  last_name  String
+  phone String @default("")
+
+  document_id String? @unique
+  tax_id String? @unique
 
   stripe_costumer_id String?
+
+  id_image IdDocumentImage?
+  tax_id_image TaxDocumentImage?
 
   donations Donation[]
 
@@ -31,6 +38,32 @@ model User {
   payments Payment[]
 
   @@map("users")
+}
+
+model IdDocumentImage {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  front String
+  back String
+
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+}
+
+model TaxDocumentImage {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  front String
+  back String
+
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
 }
 
 model Donation {
@@ -45,6 +78,17 @@ model Donation {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("donations")
+}
+
+model LandingImages {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  name    String
+  alt_name String
+  image   String
 }
 
 model Contact {

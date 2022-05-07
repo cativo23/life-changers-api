@@ -6,9 +6,11 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { DonationModule } from './donation/donation.module';
 import { ContactModule } from './contact/contact.module';
-import { StripeService } from './stripe/stripe.service';
 import { StripeModule } from './stripe/stripe.module';
 import { InstitutionsModule } from './institutions/institutions.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { LandingImagesModule } from './landing-images/landing-images.module';
+import { ImagesControllerController } from './images-controller/images-controller.controller';
 @Module({
   imports: [
     AuthModule,
@@ -17,11 +19,13 @@ import { InstitutionsModule } from './institutions/institutions.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    MulterModule.register(),
     DonationModule,
     ContactModule,
     StripeModule,
     InstitutionsModule,
+    LandingImagesModule,
   ],
-  controllers: [HomeController]
+  controllers: [HomeController, ImagesControllerController]
 })
 export class AppModule {}
