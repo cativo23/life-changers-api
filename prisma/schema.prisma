@@ -10,6 +10,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model EmailChange {
+  token      String   @id @db.Char(21)
+  newEmail   String
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  validUntil DateTime @db.Timestamp(6)
+  @@map("email-change")
+}
+
+model EmailVerification {
+  token      String   @id @db.Char(21)
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  validUntil DateTime @db.Timestamp(6)
+  @@map("email-verification")
+}
+
+model PasswordReset {
+  token      String   @id @db.Char(21)
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  validUntil DateTime @db.Timestamp(6)
+  @@map("password-reset")
+}
+
+
 model User {
   id Int @id @default(autoincrement())
 
@@ -28,8 +54,16 @@ model User {
 
   stripe_costumer_id String?
 
+  emailChange       EmailChange?
+  emailVerification EmailVerification?
+  passwordReset     PasswordReset?
+
   id_image IdDocumentImage?
   tax_id_image TaxDocumentImage?
+
+
+  image             String?
+  emailVerified     Boolean            @default(false)
 
   donations Donation[]
 

@@ -13,6 +13,8 @@ import { LandingImagesModule } from './landing-images/landing-images.module';
 import { ImagesControllerController } from './images-controller/images-controller.controller';
 import { SiteInfoModule } from './site-info/site-info.module';
 import { TeamMembersModule } from './team-members/team-members.module';
+import { MailSenderModule } from './mail-sender/mail-sender.module';
+
 @Module({
   imports: [
     AuthModule,
@@ -29,7 +31,9 @@ import { TeamMembersModule } from './team-members/team-members.module';
     LandingImagesModule,
     SiteInfoModule,
     TeamMembersModule,
+    MailSenderModule,
   ],
-  controllers: [HomeController, ImagesControllerController]
+  controllers: [HomeController, ImagesControllerController],
+  providers: []
 })
 export class AppModule {}

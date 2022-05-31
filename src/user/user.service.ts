@@ -4,6 +4,7 @@ import { StripeService } from '../stripe/stripe.service';
 import { CreateUserDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { User, Prisma } from '@prisma/client';
+import * as moment from 'moment';
 
 @Injectable()
 export class UserService {
@@ -24,7 +25,7 @@ export class UserService {
         });
     }
     
-    async create(userData: CreateUserDto) {
+    async create(userData: CreateUserDto, emailVerificationToken): Promise<User> {
 
         try {
             const name = userData.first_name + ' ' + userData.last_name;
@@ -34,11 +35,18 @@ export class UserService {
             if  (!stripeCustomer) {
                 stripeCustomer = await this.stripeService.createCustomer(name, userData.email);
             }
+            
 
             const newUser = await this.prisma.user.create({
                 data: {
                     ...userData,
-                    stripe_costumer_id: stripeCustomer.id
+                    stripe_costumer_id: stripeCustomer.id,
+                    emailVerification: {
+                        create: {
+                            token: emailVerificationToken,
+                            validUntil: moment().add(1, 'days').toISOString(),
+                        },
+                    },
                 }
             });
 
@@ -47,13 +55,15 @@ export class UserService {
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === 'P2002') {
-                    throw new ForbiddenException('Email already in use');
+                    throw new ForbiddenException('Unique fields are already taken');
                 }
             }
 
             if (error.type == 'StripeAuthenticationError') {
                 throw new ForbiddenException('Invalid Stripe Credentials');
             }
+
+            throw error;
         }
 
         
