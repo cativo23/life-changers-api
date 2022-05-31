@@ -4,6 +4,6 @@ import { SiteInfoController } from './site-info.controller';
 
 @Module({
   controllers: [SiteInfoController],
-  providers: [SiteInfoService]
+  providers: [SiteInfoService],
 })
 export class SiteInfoModule {}

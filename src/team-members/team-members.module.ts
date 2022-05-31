@@ -4,6 +4,6 @@ import { TeamMembersController } from './team-members.controller';
 
 @Module({
   controllers: [TeamMembersController],
-  providers: [TeamMembersService]
+  providers: [TeamMembersService],
 })
 export class TeamMembersModule {}

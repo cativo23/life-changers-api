@@ -1,6 +1,10 @@
-import { INestApplication, ValidationPipe, VersioningType } from "@nestjs/common";
-import { Test } from "@nestjs/testing";
-import { AppModule } from "../src/app.module";
+import {
+  INestApplication,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import { AppModule } from '../src/app.module';
 
 describe('App e2e test', () => {
   let app: INestApplication;
@@ -15,7 +19,7 @@ describe('App e2e test', () => {
     app.enableVersioning({
       type: VersioningType.URI,
     });
-  
+
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -24,8 +28,6 @@ describe('App e2e test', () => {
 
     await app.init();
   });
-
-  
 
   afterAll(async () => {
     app.close();

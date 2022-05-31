@@ -34,6 +34,6 @@ import { MailSenderModule } from './mail-sender/mail-sender.module';
     MailSenderModule,
   ],
   controllers: [HomeController, ImagesControllerController],
-  providers: []
+  providers: [],
 })
 export class AppModule {}

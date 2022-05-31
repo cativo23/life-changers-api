@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
           port: config.get('MAIL_PORT'),
           secure: false,
           tls: {
-            ciphers: 'SSLv3'
+            ciphers: 'SSLv3',
           },
           /*auth: {
             user: config.get('MAIL_USER'),
@@ -36,6 +36,6 @@ import { ConfigService } from '@nestjs/config';
     }),
   ],
   providers: [MailSenderService],
-  exports: [MailSenderService]
+  exports: [MailSenderService],
 })
-export class MailSenderModule { }
+export class MailSenderModule {}

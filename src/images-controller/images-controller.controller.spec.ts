@@ -9,7 +9,9 @@ describe('ImagesControllerController', () => {
       controllers: [ImagesControllerController],
     }).compile();
 
-    controller = module.get<ImagesControllerController>(ImagesControllerController);
+    controller = module.get<ImagesControllerController>(
+      ImagesControllerController,
+    );
   });
 
   it('should be defined', () => {

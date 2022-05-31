@@ -1,10 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, HttpException, Res, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  HttpException,
+  Res,
+  Query,
+} from '@nestjs/common';
 import { LandingImagesService } from './landing-images.service';
 import { CreateLandingImageDto } from './dto/create-landing-image.dto';
 import { UpdateLandingImageDto } from './dto/update-landing-image.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { destinationPath, editFileName, imageFileFilter } from '../utils/file-uploading.utils';
+import {
+  destinationPath,
+  editFileName,
+  imageFileFilter,
+} from '../utils/file-uploading.utils';
 import { Response } from 'express';
 
 @Controller({
@@ -14,23 +31,28 @@ import { Response } from 'express';
 export class LandingImagesController {
   constructor(private readonly landingImagesService: LandingImagesService) {}
 
-  
   @Post()
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: destinationPath,
-      filename: editFileName,
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: destinationPath,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
     }),
-    fileFilter: imageFileFilter,
-  }))
+  )
   async create(
     @UploadedFile() file,
     @Body() createLandingImageDto: CreateLandingImageDto,
-    @Res() response: Response) { 
-    if(!file) {
+    @Res() response: Response,
+  ) {
+    if (!file) {
       throw new HttpException('File is required', 400);
     }
-    const created = await this.landingImagesService.create(createLandingImageDto, file.path);
+    const created = await this.landingImagesService.create(
+      createLandingImageDto,
+      file.path,
+    );
     return response.status(201).json(created);
   }
 
@@ -45,15 +67,25 @@ export class LandingImagesController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: destinationPath,
-      filename: editFileName,
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: destinationPath,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
     }),
-    fileFilter: imageFileFilter,
-  }))
-  async update(@Param('id') id: string, @Body() updateLandingImageDto: UpdateLandingImageDto, @UploadedFile() file) {
-    return await this.landingImagesService.update(+id, updateLandingImageDto, file);
+  )
+  async update(
+    @Param('id') id: string,
+    @Body() updateLandingImageDto: UpdateLandingImageDto,
+    @UploadedFile() file,
+  ) {
+    return await this.landingImagesService.update(
+      +id,
+      updateLandingImageDto,
+      file,
+    );
   }
 
   @Delete(':id')

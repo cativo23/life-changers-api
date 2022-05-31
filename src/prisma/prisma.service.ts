@@ -3,7 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor(private config: ConfigService) {
     super({
       datasources: {
@@ -14,7 +17,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       log: ['error', 'warn'],
     });
   }
-  
+
   async onModuleInit(): Promise<void> {
     await this.$connect();
   }

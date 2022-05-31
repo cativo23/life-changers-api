@@ -1,11 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFile, Res, HttpException, UseInterceptors, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UploadedFile,
+  Res,
+  HttpException,
+  UseInterceptors,
+  Query,
+} from '@nestjs/common';
 import { InstitutionsService } from './institutions.service';
 import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { destinationPath, editFileName, imageFileFilter } from '../utils/file-uploading.utils';
+import {
+  destinationPath,
+  editFileName,
+  imageFileFilter,
+} from '../utils/file-uploading.utils';
 
 @Controller({
   path: 'institutions',
@@ -15,23 +32,29 @@ export class InstitutionsController {
   constructor(private readonly institutionsService: InstitutionsService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: destinationPath,
-      filename: editFileName,
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: destinationPath,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
     }),
-    fileFilter: imageFileFilter,
-  }))
+  )
   async create(
     @Body() createInstitutionDto: CreateInstitutionDto,
     @UploadedFile() file,
-    @Res() response: Response) {
-      if(!file) {
-        throw new HttpException('File is required', 400);
-      }
-      
-      const created = await this.institutionsService.create(createInstitutionDto, file.path);
-      response.status(201).json(created);
+    @Res() response: Response,
+  ) {
+    if (!file) {
+      throw new HttpException('File is required', 400);
+    }
+
+    const created = await this.institutionsService.create(
+      createInstitutionDto,
+      file.path,
+    );
+    response.status(201).json(created);
   }
 
   @Get()
@@ -45,7 +68,10 @@ export class InstitutionsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInstitutionDto: UpdateInstitutionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateInstitutionDto: UpdateInstitutionDto,
+  ) {
     return this.institutionsService.update(+id, updateInstitutionDto);
   }
 

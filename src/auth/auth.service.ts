@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto';
 import * as argon from 'argon2';
@@ -9,10 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto';
 import { nanoid } from 'nanoid';
-import {
-  ResetPasswordRequest,
-  ChangePasswordRequest,
-} from './dto';
+import { ResetPasswordRequest, ChangePasswordRequest } from './dto';
 import { MailSenderService } from '../mail-sender/mail-sender.service';
 
 @Injectable()
@@ -25,7 +27,7 @@ export class AuthService {
     private mailSender: MailSenderService,
   ) {}
 
-  async login(dto: LoginDto){
+  async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
@@ -50,8 +52,7 @@ export class AuthService {
 
     const hasedPassword = await argon.hash(dto.password);
     dto.password = hasedPassword;
-    
-    
+
     const user = await this.user.create(dto, emailVerificationToken);
 
     await this.mailSender.sendVerifyEmailMail(
@@ -59,7 +60,7 @@ export class AuthService {
       dto.email,
       emailVerificationToken,
     );
-      
+
     return user;
   }
 
@@ -69,9 +70,10 @@ export class AuthService {
     userId: number,
   ): Promise<void> {
     // delete old email verification tokens if exist
-    const deletePrevEmailVerificationIfExist = this.prisma.emailVerification.deleteMany({
-      where: { userId },
-    });
+    const deletePrevEmailVerificationIfExist =
+      this.prisma.emailVerification.deleteMany({
+        where: { userId },
+      });
 
     const token = nanoid();
 
@@ -79,7 +81,7 @@ export class AuthService {
       data: {
         userId,
         token,
-        validUntil:  moment().add(1, 'days').toISOString()
+        validUntil: moment().add(1, 'days').toISOString(),
       },
       select: null,
     });
@@ -98,8 +100,8 @@ export class AuthService {
     });
 
     if (
-      emailVerification !== null
-      && emailVerification.validUntil > new Date()
+      emailVerification !== null &&
+      emailVerification.validUntil > new Date()
     ) {
       await this.prisma.user.update({
         where: { id: emailVerification.userId },
@@ -199,7 +201,6 @@ export class AuthService {
     // no need to wait for information email
     this.mailSender.sendPasswordChangeInfoMail(name, email);
   }
-
 
   async signToken(user: User): Promise<{
     access_token: string;

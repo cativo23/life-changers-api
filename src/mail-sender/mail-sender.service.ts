@@ -17,28 +17,54 @@ export class MailSenderService {
     private readonly prisma: PrismaService,
     private mailerService: MailerService,
   ) {
-    const socials = [
-      ['GitHub', '__Project_GitHub_URL__'],
-    ];
+    const socials = [['GitHub', '__Project_GitHub_URL__']];
 
-    this.socials = socials.map(
-      (social) => `<a href="${social[1]}" style="box-sizing:border-box;color:${'#123456'};font-weight:400;text-decoration:none;font-size:12px;padding:0 5px" target="_blank">${social[0]}</a>`,
-    ).join('');
+    this.socials = socials
+      .map(
+        (social) =>
+          `<a href="${
+            social[1]
+          }" style="box-sizing:border-box;color:${'#123456'};font-weight:400;text-decoration:none;font-size:12px;padding:0 5px" target="_blank">${
+            social[0]
+          }</a>`,
+      )
+      .join('');
   }
 
-  async sendVerifyEmailMail(name: string, email: string, token: string): Promise<boolean> {
-    const buttonLink = `${this.config.get('APP_URL')}/auth/verify?token=${token}`;
+  async sendVerifyEmailMail(
+    name: string,
+    email: string,
+    token: string,
+  ): Promise<boolean> {
+    const buttonLink = `${this.config.get(
+      'APP_URL',
+    )}/auth/verify?token=${token}`;
 
-    const subject = `Welcome to ${this.config.get('APP_NAME')} ${name}! Confirm Your Email`;
+    const subject = `Welcome to ${this.config.get(
+      'APP_NAME',
+    )} ${name}! Confirm Your Email`;
 
-    return await this.sendMail(email, name, subject, 'confirm-mail', buttonLink);
+    return await this.sendMail(
+      email,
+      name,
+      subject,
+      'confirm-mail',
+      buttonLink,
+    );
   }
 
-
-  sendMail(email: string, name: string, subject: string, template: string, buttonLink: string): boolean | PromiseLike<boolean> {
+  sendMail(
+    email: string,
+    name: string,
+    subject: string,
+    template: string,
+    buttonLink: string,
+  ): boolean | PromiseLike<boolean> {
     const mailOptions = {
       to: email,
-      from: `"${this.config.get('MAIL_FROM_NAME')}" <${this.config.get('MAIL_FROM')}>`,
+      from: `"${this.config.get('MAIL_FROM_NAME')}" <${this.config.get(
+        'MAIL_FROM',
+      )}>`,
       subject: subject,
       template: template,
       context: {
@@ -51,18 +77,23 @@ export class MailSenderService {
         proyect_link: this.config.get('FRONTEND_URL'),
         socials: this.socials,
         button_link: buttonLink,
-        terms_of_service_link: this.config.get('FRONTEND_URL') + '/terms-of-service'
+        terms_of_service_link:
+          this.config.get('FRONTEND_URL') + '/terms-of-service',
       },
     };
 
-    return this.mailerService.sendMail(mailOptions).catch(async (error: any) => {
-      if (error) {
-        this.logger.warn('Mail sending failed, check your service credentials.');
-        this.logger.error(error);
-        return false;
-      }
-      return true;
-    });
+    return this.mailerService
+      .sendMail(mailOptions)
+      .catch(async (error: any) => {
+        if (error) {
+          this.logger.warn(
+            'Mail sending failed, check your service credentials.',
+          );
+          this.logger.error(error);
+          return false;
+        }
+        return true;
+      });
   }
 
   async sendResetPasswordMail(
@@ -74,7 +105,9 @@ export class MailSenderService {
 
     const buttonLink = `${url}?token=${token}`;
 
-    const subject = `Reset Your ${this.config.get('APP_NAME')} Account's Password`;
+    const subject = `Reset Your ${this.config.get(
+      'APP_NAME',
+    )} Account's Password`;
 
     return this.sendMail(email, name, subject, 'reset-password', buttonLink);
   }
@@ -85,8 +118,16 @@ export class MailSenderService {
   ): Promise<boolean> {
     const buttonLink = this.config.get('APP_URL');
 
-    const subject = `Your ${this.config.get('APP_NAME')} Account's Password has Changed`;
+    const subject = `Your ${this.config.get(
+      'APP_NAME',
+    )} Account's Password has Changed`;
 
-    return this.sendMail(email, name, subject , 'change-password-info', buttonLink);
+    return this.sendMail(
+      email,
+      name,
+      subject,
+      'change-password-info',
+      buttonLink,
+    );
   }
 }

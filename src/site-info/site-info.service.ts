@@ -10,7 +10,7 @@ export class SiteInfoService {
     return await this.prisma.siteInfo.findFirst({
       where: {
         id: +id,
-      }
+      },
     });
   }
 
@@ -21,7 +21,7 @@ export class SiteInfoService {
       },
       data: {
         ...updateSiteInfoDto,
-      }
+      },
     });
   }
 }

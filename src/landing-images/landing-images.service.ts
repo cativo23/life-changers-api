@@ -16,7 +16,7 @@ export class LandingImagesService {
         name: createLandingImageDto.name,
         alt_name: createLandingImageDto.alt_name,
         image: filePath,
-      }
+      },
     });
 
     return landingImage;
@@ -24,15 +24,15 @@ export class LandingImagesService {
 
   async findAll(page: number, perPage: number) {
     const paginate = createPaginator({ perPage: perPage });
-    
+
     return await paginate<LandingImages, Prisma.LandingImagesFindManyArgs>(
       this.prisma.institution,
       {
         orderBy: {
           id: 'desc',
-        }
+        },
       },
-      { page: page}
+      { page: page },
     );
   }
 
@@ -40,7 +40,7 @@ export class LandingImagesService {
     return this.prisma.landingImages.findFirst({
       where: {
         id: +id,
-      }
+      },
     });
   }
 
@@ -48,10 +48,10 @@ export class LandingImagesService {
     const previous = await this.prisma.landingImages.findFirst({
       where: {
         id: +id,
-      }
+      },
     });
 
-    if(file) {
+    if (file) {
       this.deleteImage(previous.image);
     }
 
@@ -72,7 +72,7 @@ export class LandingImagesService {
       const previous = await this.prisma.landingImages.findFirst({
         where: {
           id: +id,
-        }
+        },
       });
 
       this.deleteImage(previous.image);
@@ -80,19 +80,19 @@ export class LandingImagesService {
       return await this.prisma.landingImages.delete({
         where: {
           id: +id,
-        }
-      })
-    } catch(err) {
+        },
+      });
+    } catch (err) {
       throw new HttpException('File not found', 404);
     }
   }
 
   deleteImage(path: string) {
-      try {
-        fs.unlinkSync(path);
-        //file removed
-      } catch(err) {
-        throw new HttpException('File not found', 404);
-      }
+    try {
+      fs.unlinkSync(path);
+      //file removed
+    } catch (err) {
+      throw new HttpException('File not found', 404);
+    }
   }
 }

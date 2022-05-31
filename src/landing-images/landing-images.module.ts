@@ -4,6 +4,6 @@ import { LandingImagesController } from './landing-images.controller';
 
 @Module({
   controllers: [LandingImagesController],
-  providers: [LandingImagesService]
+  providers: [LandingImagesService],
 })
 export class LandingImagesModule {}

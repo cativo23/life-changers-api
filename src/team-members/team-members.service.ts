@@ -14,28 +14,30 @@ export class TeamMembersService {
     const newMember = await this.prisma.teamMember.create({
       data: {
         ...createTeamMemberDto,
-        image: filePath
-      }
+        image: filePath,
+      },
     });
 
-    return newMember;;
+    return newMember;
   }
 
   async findAll(page: number, perPage: number) {
     const paginate = createPaginator({ perPage: perPage });
-    
+
     return await paginate<TeamMember, Prisma.TeamMemberFindManyArgs>(
       this.prisma.institution,
       {
         orderBy: {
           id: 'desc',
-        }
+        },
       },
-      { page: page}
+      { page: page },
     );
   }
 
-  async findOne(memberUniqeInput: Prisma.TeamMemberWhereUniqueInput): Promise<TeamMember | null> {
+  async findOne(
+    memberUniqeInput: Prisma.TeamMemberWhereUniqueInput,
+  ): Promise<TeamMember | null> {
     return await this.prisma.teamMember.findUnique({
       where: memberUniqeInput,
     });
@@ -50,17 +52,17 @@ export class TeamMembersService {
       const previous = await this.prisma.teamMember.findFirst({
         where: {
           id: +id,
-        }
+        },
       });
-      
+
       this.deleteImage(previous.image);
 
       return await this.prisma.teamMember.delete({
         where: {
           id: +id,
-        }
-      })
-    } catch(err) {
+        },
+      });
+    } catch (err) {
       throw new HttpException('File not found', 404);
     }
   }
@@ -68,7 +70,7 @@ export class TeamMembersService {
     try {
       fs.unlinkSync(path);
       //file removed
-    } catch(err) {
+    } catch (err) {
       throw new HttpException('File not found', 404);
     }
   }

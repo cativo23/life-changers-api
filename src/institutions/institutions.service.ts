@@ -8,12 +8,12 @@ import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
 export class InstitutionsService {
-  constructor(
-    private prisma: PrismaService,
-) {}
+  constructor(private prisma: PrismaService) {}
 
-  async create(createInstitutionDto: CreateInstitutionDto, filePath: string): Promise<Institution> {
-
+  async create(
+    createInstitutionDto: CreateInstitutionDto,
+    filePath: string,
+  ): Promise<Institution> {
     const newInstitution = await this.prisma.institution.create({
       data: {
         name: createInstitutionDto.name,
@@ -24,27 +24,29 @@ export class InstitutionsService {
         number_students: Number(createInstitutionDto.number_students),
         adminId: Number(createInstitutionDto.adminId),
         image: filePath,
-      }
+      },
     });
 
     return newInstitution;
   }
 
-  async findAll(page: number, perPage: number){
+  async findAll(page: number, perPage: number) {
     const paginate = createPaginator({ perPage: perPage });
-    
+
     return await paginate<Institution, Prisma.InstitutionFindManyArgs>(
       this.prisma.institution,
       {
         orderBy: {
           id: 'desc',
-        }
+        },
       },
-      { page: page}
+      { page: page },
     );
   }
 
-  async findOne(institutionUniqueInput: Prisma.InstitutionWhereUniqueInput): Promise<Institution | null> {
+  async findOne(
+    institutionUniqueInput: Prisma.InstitutionWhereUniqueInput,
+  ): Promise<Institution | null> {
     return await this.prisma.institution.findUnique({
       where: institutionUniqueInput,
     });
@@ -59,17 +61,17 @@ export class InstitutionsService {
       const previous = await this.prisma.institution.findFirst({
         where: {
           id: +id,
-        }
+        },
       });
-      
+
       this.deleteImage(previous.image);
 
       return await this.prisma.institution.delete({
         where: {
           id: +id,
-        }
-      })
-    } catch(err) {
+        },
+      });
+    } catch (err) {
       throw new HttpException('File not found', 404);
     }
   }
@@ -78,7 +80,7 @@ export class InstitutionsService {
     try {
       fs.unlinkSync(path);
       //file removed
-    } catch(err) {
+    } catch (err) {
       throw new HttpException('File not found', 404);
     }
   }

@@ -20,7 +20,7 @@ export class SiteInfoController {
 
   @Patch()
   async update(@Body() updateSiteInfoDto: UpdateSiteInfoDto) {
-    const info = await this.siteInfoService.update(1, updateSiteInfoDto)
+    const info = await this.siteInfoService.update(1, updateSiteInfoDto);
     delete info.created_at;
     delete info.updated_at;
     delete info.id;

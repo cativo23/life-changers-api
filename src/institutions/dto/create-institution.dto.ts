@@ -1,26 +1,26 @@
-import { IsEmail, IsNumber, IsString } from "class-validator";
-import { UserExistsId } from "../../user/decorator";
+import { IsEmail, IsNumber, IsString } from 'class-validator';
+import { UserExistsId } from '../../user/decorator';
 
 export class CreateInstitutionDto {
-    @IsString()
-    name: string;
+  @IsString()
+  name: string;
 
-    @IsString()
-    @IsEmail()
-    email: string;
+  @IsString()
+  @IsEmail()
+  email: string;
 
-    @IsString()
-    phone: string;
+  @IsString()
+  phone: string;
 
-    @IsString()
-    address: string;
+  @IsString()
+  address: string;
 
-    @IsString()
-    description: string;
-    
-    @IsString()
-    number_students: string;
+  @IsString()
+  description: string;
 
-    @IsString()
-    adminId: number;
+  @IsString()
+  number_students: string;
+
+  @IsString()
+  adminId: number;
 }

@@ -1,7 +1,17 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { User } from '@prisma/client';
 import { CreateUserDto } from '../user/dto';
 import { AuthService } from './auth.service';
+import { GetUser } from './decorator';
 import { AuthRequest, CheckEmailResponse, CheckEmailRequest } from './dto';
+import { JwtGuard } from './guard';
 
 @Controller({
   path: 'auth',
@@ -15,7 +25,9 @@ export class AuthController {
   async checkEmailAvailability(
     @Body() checkEmailRequest: CheckEmailRequest,
   ): Promise<CheckEmailResponse> {
-    const isAvailable = await this.authService.isEmailAvailable(checkEmailRequest.email);
+    const isAvailable = await this.authService.isEmailAvailable(
+      checkEmailRequest.email,
+    );
     return new CheckEmailResponse(isAvailable);
   }
 
@@ -29,5 +41,10 @@ export class AuthController {
   @Post('login')
   login(@Body() dto: AuthRequest) {
     return this.authService.login(dto);
+  }
+
+  @UseGuards(JwtGuard)
+  async getUserWithToken(@GetUser() user: User): Promise<UserResponse> {
+    return UserResponse.fromUserEntity(user);
   }
 }
