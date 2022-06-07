@@ -8,6 +8,7 @@ import {
 import { User } from '@prisma/client';
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
+import { UserResponse } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller({
@@ -18,6 +19,6 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @Get('me')
   me(@GetUser() user: User) {
-    return user;
+    return UserResponse.fromUserEntity(user);
   }
 }

@@ -10,29 +10,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model EmailChange {
+model EmailChangeTokens {
   token      String   @id @db.Char(21)
   newEmail   String
   userId     Int      @unique
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   validUntil DateTime @db.Timestamp(6)
-  @@map("email-change")
+  @@map("email_change_tokens")
 }
 
-model EmailVerification {
+model EmailVerificationTokens {
   token      String   @id @db.Char(21)
   userId     Int      @unique
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   validUntil DateTime @db.Timestamp(6)
-  @@map("email-verification")
+  @@map("email_verification_tokens")
 }
 
-model PasswordReset {
+model PasswordResetTokens {
   token      String   @id @db.Char(21)
   userId     Int      @unique
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   validUntil DateTime @db.Timestamp(6)
-  @@map("password-reset")
+  @@map("password_reset_tokens")
 }
 
 
@@ -54,13 +54,12 @@ model User {
 
   stripe_costumer_id String?
 
-  emailChange       EmailChange?
-  emailVerification EmailVerification?
-  passwordReset     PasswordReset?
+  emailChange       EmailChangeTokens?
+  emailVerification EmailVerificationTokens?
+  passwordReset     PasswordResetTokens?
 
   id_image IdDocumentImage?
   tax_id_image TaxDocumentImage?
-
 
   image             String?
   emailVerified     Boolean            @default(false)
@@ -70,6 +69,8 @@ model User {
   institutions Institution[]
 
   payments Payment[]
+
+  access_tokens AccessToken[]
 
   @@map("users")
 }
@@ -85,6 +86,8 @@ model IdDocumentImage {
 
   userId Int
   user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+
+  @@map("id_document_images")
 }
 
 model TaxDocumentImage {
@@ -98,6 +101,8 @@ model TaxDocumentImage {
 
   userId Int
   user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+
+  @@map("tax_document_images")
 }
 
 model Donation {
@@ -123,6 +128,8 @@ model LandingImages {
   name    String
   alt_name String
   image   String
+
+  @@map("landing_images")
 }
 
 model SiteInfo {
@@ -206,4 +213,32 @@ model Payment {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payments")
+}
+
+model AccessToken {
+  id             Int             @id @unique @default(autoincrement())
+  created_at     DateTime        @default(now())
+  updated_at     DateTime         @updatedAt
+  userId         Int
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hashed_token   String          @db.VarChar(100)
+  name           String
+  expires_at     DateTime
+  revoked        Boolean         @default(false)
+  refresh_tokens RefreshToken?
+
+  @@map("access_tokens")
+}
+
+model RefreshToken {
+  id              Int           @id @unique @default(autoincrement())
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  hashed_token    String        @db.VarChar(100)
+  expires_at      DateTime
+  revoked         Boolean       @default(false)
+  access_token_id Int
+  access_tokens   AccessToken @relation(fields: [access_token_id], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
