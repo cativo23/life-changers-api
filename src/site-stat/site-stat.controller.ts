@@ -65,20 +65,43 @@ export class SiteStatController extends ApiController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.siteStatService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.successResponse(
+      await this.siteStatService.findOne(+id),
+      'Site stat retrieved successfully',
+    );
   }
 
   @Patch(':id')
-  update(
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: destinationPath,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async update(
     @Param('id') id: string,
     @Body() updateSiteStatDto: UpdateSiteStatDto,
+    @UploadedFile() file,
   ) {
-    return this.siteStatService.update(+id, updateSiteStatDto);
+    return this.successResponse(
+      await this.siteStatService.update(
+        +id,
+        updateSiteStatDto,
+        file,
+        ),
+      'Site stat updated successfully'
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.siteStatService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.successResponse(
+      await this.siteStatService.remove(+id),
+      'Site stat removed successfully',
+    );
   }
 }

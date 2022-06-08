@@ -18,7 +18,7 @@ export const editFileName = (req, file, callback) => {
 };
 
 export const destinationPath = (req, file, callback) => {
-  const nameRoute = req.route.path;
+  const nameRoute = req.route.path.replace(':id', '');
   let savePath = './files/' + nameRoute;
   callback(null, savePath);
 };
