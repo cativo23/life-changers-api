@@ -1,5 +1,5 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import { ApiResponse } from './common/transformers/general-transformer.interceptor';
@@ -17,7 +17,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalInterceptors(new ApiResponse());
+  app.useGlobalInterceptors(new ApiResponse(new Reflector()));
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
