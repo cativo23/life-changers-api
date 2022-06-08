@@ -23,13 +23,16 @@ import {
   imageFileFilter,
 } from '../utils/file-uploading.utils';
 import { Response } from 'express';
+import { ApiController } from '../common/controllers/api.controller';
 
 @Controller({
   path: 'landing-images',
   version: '1',
 })
-export class LandingImagesController {
-  constructor(private readonly landingImagesService: LandingImagesService) {}
+export class LandingImagesController extends ApiController {
+  constructor(private readonly landingImagesService: LandingImagesService) {
+    super();
+  }
 
   @Post()
   @UseInterceptors(
@@ -44,7 +47,6 @@ export class LandingImagesController {
   async create(
     @UploadedFile() file,
     @Body() createLandingImageDto: CreateLandingImageDto,
-    @Res() response: Response,
   ) {
     if (!file) {
       throw new HttpException('File is required', 400);
@@ -53,12 +55,18 @@ export class LandingImagesController {
       createLandingImageDto,
       file.path,
     );
-    return response.status(201).json(created);
+    return await this.successResponse(
+      created,
+      'Landing image created successfully',
+    );
   }
 
   @Get()
-  findAll(@Query('page') page: number, @Query('limit') perPage: number) {
-    return this.landingImagesService.findAll(page, perPage);
+  async findAll(@Query('page') page: number, @Query('limit') perPage: number) {
+    return this.successResponse(
+      await this.landingImagesService.findAll(page, perPage),
+      'Landing images retrieved successfully',
+    );
   }
 
   @Get(':id')

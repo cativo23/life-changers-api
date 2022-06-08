@@ -14,6 +14,7 @@ import { ImagesControllerController } from './images-controller/images-controlle
 import { SiteInfoModule } from './site-info/site-info.module';
 import { TeamMembersModule } from './team-members/team-members.module';
 import { MailSenderModule } from './mail-sender/mail-sender.module';
+import { SiteStatModule } from './site-stat/site-stat.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { MailSenderModule } from './mail-sender/mail-sender.module';
     SiteInfoModule,
     TeamMembersModule,
     MailSenderModule,
+    SiteStatModule,
   ],
   controllers: [HomeController, ImagesControllerController],
   providers: [],

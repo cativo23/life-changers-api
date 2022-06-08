@@ -26,7 +26,7 @@ export class AuthService {
     private config: ConfigService,
     private user: UserService,
     private mailSender: MailSenderService,
-  ) { }
+  ) {}
 
   async login(dto: LoginDto): Promise<Tokens> {
     const user = await this.prisma.user.findUnique({
@@ -46,8 +46,6 @@ export class AuthService {
     }
 
     const result = await this.revokeAccessToken(user);
-
-    console.log('result: ' + result);
 
     const tokens = await this.signTokens(user);
 
@@ -70,7 +68,7 @@ export class AuthService {
       emailVerificationToken,
     );
 
-    await this.revokeAccessToken(user)
+    await this.revokeAccessToken(user);
 
     const tokens = await this.signTokens(user);
 
@@ -110,9 +108,10 @@ export class AuthService {
   }
 
   async verifyEmail(token: string): Promise<Boolean> {
-    const emailVerification = await this.prisma.emailVerificationTokens.findUnique({
-      where: { token },
-    });
+    const emailVerification =
+      await this.prisma.emailVerificationTokens.findUnique({
+        where: { token },
+      });
 
     if (
       emailVerification !== null &&
@@ -157,11 +156,10 @@ export class AuthService {
       throw new NotFoundException();
     }
 
-    const deletePrevPasswordResetIfExist = this.prisma.passwordResetTokens.deleteMany(
-      {
+    const deletePrevPasswordResetIfExist =
+      this.prisma.passwordResetTokens.deleteMany({
         where: { userId: user.id },
-      },
-    );
+      });
 
     const token = nanoid();
 
@@ -245,7 +243,7 @@ export class AuthService {
 
     const secret = this.config.get<string>('JWT_SECRET');
 
-    const expiresInAt = this.config.get('JWT_EXPIRATION');;
+    const expiresInAt = this.config.get('JWT_EXPIRATION');
 
     const accessToken = await this.jwt.signAsync(payload, {
       expiresIn: expiresInAt,
@@ -258,10 +256,12 @@ export class AuthService {
     });
 
     const expirationDateAt = moment(moment.now())
-      .add(expiresInAt.replace('d', ''), 'days').toISOString();
+      .add(expiresInAt.replace('d', ''), 'days')
+      .toISOString();
 
     const expirationDateRt = moment(moment.now())
-      .add('7', 'days').toISOString();
+      .add('7', 'days')
+      .toISOString();
 
     return {
       access_token: {
@@ -284,7 +284,7 @@ export class AuthService {
         user: {
           connect: {
             id: userId,
-          }
+          },
         },
         hashed_token: accessTokenHashed,
         name: 'Personal Access Token',
@@ -292,11 +292,11 @@ export class AuthService {
         refresh_tokens: {
           create: {
             hashed_token: refreshTokenHashed,
-            expires_at: tokens.refresh_token.expires_at
-          }
-        }
-      }
-    })
+            expires_at: tokens.refresh_token.expires_at,
+          },
+        },
+      },
+    });
   }
 
   async logout(userId: number): Promise<Boolean> {
@@ -310,7 +310,6 @@ export class AuthService {
   }
 
   async revokeAccessToken(user: User): Promise<Boolean> {
-
     const accessTokens = await this.prisma.accessToken.findMany({
       take: 1,
       orderBy: {
@@ -319,7 +318,7 @@ export class AuthService {
       where: {
         userId: user.id,
         revoked: false,
-      }
+      },
     });
 
     if (accessTokens.length === 0) {
@@ -331,16 +330,16 @@ export class AuthService {
     if (accessToken) {
       await this.prisma.accessToken.update({
         where: {
-          id: accessToken.id
+          id: accessToken.id,
         },
         data: {
           revoked: true,
           refresh_tokens: {
             update: {
               revoked: true,
-            }
-          }
-        }
+            },
+          },
+        },
       });
       return true;
     }

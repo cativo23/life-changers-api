@@ -1,5 +1,3 @@
-
-  
 import type { User } from '@prisma/client';
 
 export class UserResponse {
@@ -23,7 +21,8 @@ export class UserResponse {
     response.email = entity.email;
     response.emailVerified = entity.emailVerified;
     response.name = [entity.first_name, entity.last_name]
-      .filter((s) => s !== null).join(' ');
+      .filter((s) => s !== null)
+      .join(' ');
     response.image = entity.image;
     response.phone = entity.phone;
     response.registrationDate = entity.created_at;
