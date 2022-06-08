@@ -11,6 +11,7 @@ export interface Response<T> {
   status_code: number;
   message: string;
   data: T;
+  meta: T;
 }
 
 @Injectable()
@@ -29,7 +30,8 @@ export class ApiResponse<T>
           status_code: context.switchToHttp().getResponse().statusCode,
           reqId: context.switchToHttp().getRequest().reqId,
           message: response.message || '',
-          data: response.data,
+          data: response.data?.data || response.data,
+          meta: response.data?.meta
         })),
       );
   }
