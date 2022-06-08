@@ -18,6 +18,7 @@ export const editFileName = (req, file, callback) => {
 };
 
 export const destinationPath = (req, file, callback) => {
-  let savePath = './files/';
+  const nameRoute = req.route.path;
+  let savePath = './files/' + nameRoute;
   callback(null, savePath);
 };

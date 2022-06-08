@@ -8,7 +8,10 @@ import { Request } from 'express';
 import * as argon from 'argon2';
 
 @Injectable()
-export class JwtStrategyRefresh extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class JwtStrategyRefresh extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
   constructor(private config: ConfigService, private prisma: PrismaService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -19,27 +22,27 @@ export class JwtStrategyRefresh extends PassportStrategy(Strategy, 'jwt-refresh'
   }
 
   async validate(req: Request, payload: JwtPayload): Promise<JwtPayloadWithRt> {
-
     const token = req?.get('authorization')?.replace('Bearer', '').trim();
 
     const refreshTokens = await this.prisma.refreshToken.findMany({
       take: 1,
       where: {
         hashed_token: await argon.hash(token),
-      }
+      },
     });
 
-    if (refreshTokens.length === 0) throw new ForbiddenException('Refresh token malformed');
+    if (refreshTokens.length === 0)
+      throw new ForbiddenException('Refresh token malformed');
 
     const refreshToken = refreshTokens[0];
 
     if (refreshToken.revoked) {
       return null;
     }
-    
+
     return {
       ...payload,
-      'refreshToken': token,
+      refreshToken: token,
     };
   }
 }

@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         id: payload.sub,
       },
     });
-    
+
     if (!user) {
       return null;
     }
@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const accessTokens = await this.prisma.accessToken.findMany({
       take: 1,
       orderBy: {
-        created_at: 'desc'
+        created_at: 'desc',
       },
       where: {
         userId: user.id,
