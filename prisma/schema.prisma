@@ -215,6 +215,20 @@ model Payment {
   @@map("payments")
 }
 
+model SiteStats {
+  id Int @id @default(autoincrement())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  title       String  
+  total       Int     @default(0)
+  description String 
+  image       String
+
+  @@map("site_stats")
+}
+
 model AccessToken {
   id             Int             @id @unique @default(autoincrement())
   created_at     DateTime        @default(now())
