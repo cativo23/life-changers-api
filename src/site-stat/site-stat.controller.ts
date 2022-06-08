@@ -47,15 +47,21 @@ export class SiteStatController extends ApiController {
     @Body() createSiteStatDto: CreateSiteStatDto,
     @UploadedFile() file,
   ) {
-    const created = await this.siteStatService.create(createSiteStatDto, file.path);
-    
-    return await this.successResponse(created, 'Site stat created successfully');
+    const created = await this.siteStatService.create(
+      createSiteStatDto,
+      file.path,
+    );
+
+    return await this.successResponse(
+      created,
+      'Site stat created successfully',
+    );
   }
 
   @Get()
   async findAll(@Query('page') page: number, @Query('limit') perPage: number) {
     const stats = await this.siteStatService.findAll(page, perPage);
-    
+
     return this.successResponse(stats, 'Site stats retrieved successfully');
   }
 

@@ -8,13 +8,13 @@ import { UpdateSiteStatDto } from './dto/update-site-stat.dto';
 @Injectable()
 export class SiteStatService {
   constructor(private prisma: PrismaService) {}
-  
+
   async create(createSiteStatDto: CreateSiteStatDto, filePath: string) {
     return await this.prisma.siteStats.create({
       data: {
         ...createSiteStatDto,
         image: filePath,
-      }
+      },
     });
   }
 

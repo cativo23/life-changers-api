@@ -4,8 +4,6 @@ import { SiteStatController } from './site-stat.controller';
 
 @Module({
   controllers: [SiteStatController],
-  providers: [
-    SiteStatService,
-  ],
+  providers: [SiteStatService],
 })
 export class SiteStatModule {}

@@ -20,6 +20,9 @@ export class UserController extends ApiController {
   @HttpCode(HttpStatus.OK)
   @Get('me')
   me(@GetUser() user: User) {
-    return this.successResponse(UserResponse.fromUserEntity(user), 'User profile retrieved');
+    return this.successResponse(
+      UserResponse.fromUserEntity(user),
+      'User profile retrieved',
+    );
   }
 }

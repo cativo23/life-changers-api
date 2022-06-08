@@ -29,7 +29,6 @@ export class AuthController extends ApiController {
 
   @Post('check-email')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(ApiResponse)
   async checkEmailAvailability(
     @Body() checkEmailRequest: CheckEmailRequest,
   ): Promise<Object> {
@@ -38,22 +37,20 @@ export class AuthController extends ApiController {
     );
     return this.successResponse(
       new CheckEmailResponse(isAvailable),
-      "Response with email availability"
+      'Response with email availability',
     );
   }
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(ApiResponse)
   async register(@Body() dto: CreateUserDto) {
     return this.successResponse(
       await this.authService.register(dto),
-      'Usuario Registrado Correctamente'
+      'Usuario Registrado Correctamente',
     );
   }
 
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(ApiResponse)
   @Post('login')
   async login(@Body() dto: AuthRequest) {
     return this.successResponse(
@@ -66,19 +63,12 @@ export class AuthController extends ApiController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtGuard)
   async logout(@GetUser() user: User) {
-
     const loggedOut = await this.authService.logout(user.id);
 
-    if(loggedOut){
-      return this.successResponse(
-        loggedOut,
-        'Logout Successful'
-      );
+    if (loggedOut) {
+      return this.successResponse(loggedOut, 'Logout Successful');
     }
-    return this.errorResponse(
-      loggedOut,
-      'Already Logged Out'
-    );
+    return this.errorResponse(loggedOut, 'Already Logged Out');
   }
 
   @Get('verify')
@@ -86,15 +76,9 @@ export class AuthController extends ApiController {
   async verifyMail(@Query('token') token: string) {
     const isVerified = await this.authService.verifyEmail(token);
 
-    if(isVerified){
-      return this.successResponse(
-        isVerified,
-        'Email Verified Successfully'
-      );
+    if (isVerified) {
+      return this.successResponse(isVerified, 'Email Verified Successfully');
     }
-    return this.errorResponse(
-      isVerified,
-      'Email Already Verified'
-    );
+    return this.errorResponse(isVerified, 'Email Already Verified');
   }
 }

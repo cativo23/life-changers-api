@@ -55,7 +55,10 @@ export class LandingImagesController extends ApiController {
       createLandingImageDto,
       file.path,
     );
-    return await this.successResponse(created, 'Landing image created successfully');
+    return await this.successResponse(
+      created,
+      'Landing image created successfully',
+    );
   }
 
   @Get()
