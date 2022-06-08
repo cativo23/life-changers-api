@@ -23,7 +23,7 @@ import {
   imageFileFilter,
 } from '../utils/file-uploading.utils';
 import { Response } from 'express';
-import { ApiController } from 'src/common/api.controller';
+import { ApiController } from '../common/controllers/api.controller';
 
 @Controller({
   path: 'landing-images',

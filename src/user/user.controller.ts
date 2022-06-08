@@ -9,7 +9,7 @@ import { User } from '@prisma/client';
 import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { UserResponse } from './dto';
-import { ApiController } from '../common/api.controller';
+import { ApiController } from '../common/controllers/api.controller';
 
 @UseGuards(JwtGuard)
 @Controller({

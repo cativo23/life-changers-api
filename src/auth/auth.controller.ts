@@ -10,9 +10,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { ApiController } from 'src/common/api.controller';
-import { ApiResponse } from '../common/general-transformer.interceptor';
-import { CreateUserDto, UserResponse } from '../user/dto';
+import { ApiController } from '../common/controllers/api.controller';
+import { CreateUserDto } from '../user/dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorator';
 import { AuthRequest, CheckEmailResponse, CheckEmailRequest } from './dto';

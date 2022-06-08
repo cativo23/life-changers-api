@@ -20,9 +20,8 @@ import {
   destinationPath,
   editFileName,
   imageFileFilter,
-} from 'src/utils/file-uploading.utils';
-import { Response } from 'express';
-import { ApiController } from '../common/api.controller';
+} from '../utils/file-uploading.utils';
+import { ApiController } from '../common/controllers/api.controller';
 
 @Controller({
   path: 'site-stats',
