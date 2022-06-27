@@ -89,17 +89,27 @@ export class LandingImagesController extends ApiController {
     @Body() updateLandingImageDto: UpdateLandingImageDto,
     @UploadedFile() file,
   ) {
-    console.log(updateLandingImageDto);
-    return await this.landingImagesService.update(
-      +id,
-      updateLandingImageDto,
-      file,
+    return this.successResponse(
+      await this.landingImagesService.update(
+        +id,
+        updateLandingImageDto,
+        file,
+      ),
+      'Landing image updated successfully',
     );
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Res() response: Response) {
+  async remove(@Param('id') id: string) {
     const deleted = await this.landingImagesService.remove(+id);
-    return response.status(200).json(deleted);
+    
+    if (!deleted) {
+      throw new HttpException('Landing image not found', 404);
+    }
+
+    return this.successResponse(
+      deleted,
+      'Landing image deleted successfully',
+    );
   }
 }
