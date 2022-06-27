@@ -89,6 +89,7 @@ export class LandingImagesController extends ApiController {
     @Body() updateLandingImageDto: UpdateLandingImageDto,
     @UploadedFile() file,
   ) {
+    console.log(updateLandingImageDto);
     return await this.landingImagesService.update(
       +id,
       updateLandingImageDto,
