@@ -52,7 +52,7 @@ model User {
   document_id String? @unique
   tax_id String? @unique
 
-  stripe_costumer_id String?
+  pagadito_costumer_id String?
 
   emailChange       EmailChangeTokens?
   emailVerification EmailVerificationTokens?
