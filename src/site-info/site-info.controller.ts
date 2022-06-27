@@ -1,13 +1,16 @@
 import { Controller, Get, Body, Patch } from '@nestjs/common';
 import { SiteInfoService } from './site-info.service';
 import { UpdateSiteInfoDto } from './dto/update-site-info.dto';
+import { ApiController } from 'src/common/controllers/api.controller';
 
 @Controller({
   path: 'site-info',
   version: '1',
 })
-export class SiteInfoController {
-  constructor(private readonly siteInfoService: SiteInfoService) {}
+export class SiteInfoController extends ApiController{
+  constructor(private readonly siteInfoService: SiteInfoService) {
+    super();
+  }
 
   @Get()
   async findAll() {
@@ -15,7 +18,7 @@ export class SiteInfoController {
     delete info.created_at;
     delete info.updated_at;
     delete info.id;
-    return info;
+    return this.successResponse(info, 'Site Information retrieved successfully');
   }
 
   @Patch()
@@ -24,6 +27,6 @@ export class SiteInfoController {
     delete info.created_at;
     delete info.updated_at;
     delete info.id;
-    return info;
+    return this.successResponse(info, 'Site Information updated successfully');
   }
 }
