@@ -6,40 +6,55 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  HttpException,
 } from '@nestjs/common';
+import { ApiController } from '../common/controllers/api.controller';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
-import { UpdateContactDto } from './dto/update-contact.dto';
 
 @Controller({
   path: 'contacts',
   version: '1',
 })
-export class ContactController {
-  constructor(private readonly contactService: ContactService) {}
+export class ContactController extends ApiController {
+  constructor(private readonly contactService: ContactService) {
+    super();
+  }
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto) {
-    return this.contactService.create(createContactDto);
+  async create(@Body() createContactDto: CreateContactDto) {
+    return this.successResponse(
+      await this.contactService.create(createContactDto),
+      'Contact Information Sent',
+    );
   }
 
   @Get()
-  findAll() {
-    return this.contactService.findAll();
+  async findAll(@Query('page') page: number, @Query('limit') perPage: number) {
+    return this.successResponse(
+      await this.contactService.findAll(page, perPage),
+      'Contact Information Returned Successfully',
+    );
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.contactService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+
+    const contact = await this.contactService.findOne({id: +id});
+
+    if (!contact) {
+      throw new HttpException('Contact not found', 404);
+    }
+
+    return this.successResponse(
+      contact,
+      'Successfully retrieved contact information',
+    );
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
-    return this.contactService.update(+id, updateContactDto);
-  }
-
-  @Delete(':id')
+  /*@Delete(':id')
   remove(@Param('id') id: string) {
     return this.contactService.remove(+id);
-  }
+  }*/
 }
