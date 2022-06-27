@@ -52,8 +52,22 @@ export class InstitutionsService {
     });
   }
 
-  update(id: number, updateInstitutionDto: UpdateInstitutionDto) {
-    return `This action updates a #${id} institution`;
+  async update(id: number, updateInstitutionDto: UpdateInstitutionDto) {
+
+    return await this.prisma.institution.update({
+      where: {
+        id: +id,
+      },
+      data: {
+        name: updateInstitutionDto.name,
+        description: updateInstitutionDto.description,
+        email: updateInstitutionDto.email,
+        phone: updateInstitutionDto.phone,
+        address: updateInstitutionDto.address,
+        number_students: Number(updateInstitutionDto.number_students),
+        adminId: Number(updateInstitutionDto.adminId),
+      },
+    });
   }
 
   async remove(id: number) {

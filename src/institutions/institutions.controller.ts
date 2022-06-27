@@ -23,13 +23,16 @@ import {
   imageFileFilter,
 } from '../utils/file-uploading.utils';
 import { Request } from 'express';
+import { ApiController } from '../common/controllers/api.controller';
 
 @Controller({
   path: 'institutions',
   version: '1',
 })
-export class InstitutionsController {
-  constructor(private readonly institutionsService: InstitutionsService) {}
+export class InstitutionsController extends ApiController {
+  constructor(private readonly institutionsService: InstitutionsService) {
+    super();
+  }
 
   @Post()
   @UseInterceptors(
@@ -54,30 +57,63 @@ export class InstitutionsController {
       createInstitutionDto,
       file.path,
     );
-    request.res.status(201).json(created);
+
+     return this.successResponse(created, 'Institution created successfully');
   }
 
   @Get()
   async findAll(@Query('page') page: number, @Query('limit') perPage: number) {
-    return await this.institutionsService.findAll(page, perPage);
+    return this.successResponse(
+      await this.institutionsService.findAll(page, perPage),
+      'Institutions returned successfully',
+    );
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.institutionsService.findOne({ id: +id });
+  async findOne(@Param('id') id: string) {
+    const institution = await this.institutionsService.findOne({ id: +id });
+    
+    if (!institution) {
+      throw new HttpException('Institution not found', 404);
+    }
+
+    return this.successResponse(
+      institution,
+      'Successfully retrieved institution information',
+    );
   }
 
   @Patch(':id')
-  update(
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: destinationPath,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async update(
     @Param('id') id: string,
     @Body() updateInstitutionDto: UpdateInstitutionDto,
   ) {
-    return this.institutionsService.update(+id, updateInstitutionDto);
+    return this.successResponse(
+      await this.institutionsService.update(+id, updateInstitutionDto),
+      'Institution updated successfully',
+    );
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Req() request) {
+  async remove(@Param('id') id: string) {
     const deleted = await this.institutionsService.remove(+id);
-    return request.res.status(200).json(deleted);
+
+    if (!deleted) {
+      throw new HttpException('Institution not found', 404);
+    }
+
+    return this.successResponse(
+      deleted,
+      'Institution deleted successfully',
+    );
   }
 }

@@ -36,8 +36,8 @@ export class LandingImagesService {
     );
   }
 
-  findOne(id: number) {
-    return this.prisma.landingImages.findFirst({
+  async findOne(id: number) {
+    return await this.prisma.landingImages.findFirst({
       where: {
         id: +id,
       },
