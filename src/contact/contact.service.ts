@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Contact, Prisma } from '@prisma/client';
+import { createPaginator } from 'prisma-pagination';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateContactDto } from './dto/create-contact.dto';
-import { UpdateContactDto } from './dto/update-contact.dto';
 
 @Injectable()
 export class ContactService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   create(createContactDto: CreateContactDto) {
     const contact = this.prisma.contact.create({
@@ -17,19 +18,34 @@ export class ContactService {
     return contact;
   }
 
-  findAll() {
-    return `This action returns all contact`;
+  async findAll(page: number, perPage: number) {
+    const paginate = createPaginator({ perPage: perPage });
+
+    return await paginate<Contact, Prisma.ContactFindManyArgs>(
+      this.prisma.contact,
+      {
+        orderBy: {
+          id: 'desc',
+        },
+      },
+      { page: page },
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contact`;
+  async findOne(
+    contactUniqueInput: Prisma.ContactWhereUniqueInput,
+  ): Promise<Contact | null> {
+    return await this.prisma.contact.findUnique({
+      where: contactUniqueInput,
+    });
   }
 
-  update(id: number, updateContactDto: UpdateContactDto) {
-    return `This action updates a #${id} contact`;
-  }
+  async remove(id: number) {
+    return await this.prisma.contact.delete({
+      where: {
+        id: +id,
+      },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} contact`;
   }
 }

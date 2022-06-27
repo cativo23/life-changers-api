@@ -13,7 +13,6 @@ export class CreateContactDto {
 
   @IsString()
   @IsNotEmpty()
-  //@IsPhoneNumber()
   phone: string;
 
   @IsString()
