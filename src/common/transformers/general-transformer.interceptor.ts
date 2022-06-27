@@ -35,7 +35,6 @@ export class ApiResponse<T> implements NestInterceptor<T, Response<T>> {
       map((response) => ({
         status: response.status,
         status_code: context.switchToHttp().getResponse().statusCode,
-        reqId: context.switchToHttp().getRequest().reqId,
         message: response.message || '',
         data: response.data?.data || response.data,
         meta: response.data?.meta,
