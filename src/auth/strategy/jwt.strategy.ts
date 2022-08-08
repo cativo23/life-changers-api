@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -24,6 +24,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     if (!user) {
       return null;
+    }
+
+    if (!user.emailVerified) {
+      throw new HttpException('Email not verified', 403);
     }
 
     const accessTokens = await this.prisma.accessToken.findMany({
