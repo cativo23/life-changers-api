@@ -63,6 +63,7 @@ model User {
 
   image             String?
   emailVerified     Boolean            @default(false)
+  documentsValid    Boolean            @default(false)
 
   donations Donation[]
 
@@ -84,7 +85,9 @@ model IdDocumentImage {
   front String
   back String
 
-  userId Int
+  valid     Boolean            @default(false)
+
+  userId Int @unique
   user User @relation(fields: [userId], references: [id], onDelete:Cascade)
 
   @@map("id_document_images")
@@ -99,7 +102,9 @@ model TaxDocumentImage {
   front String
   back String
 
-  userId Int
+  valid     Boolean            @default(false)
+
+  userId Int @unique
   user User @relation(fields: [userId], references: [id], onDelete:Cascade)
 
   @@map("tax_document_images")
@@ -251,7 +256,7 @@ model RefreshToken {
   hashed_token    String        @db.VarChar(100)
   expires_at      DateTime
   revoked         Boolean       @default(false)
-  access_token_id Int
+  access_token_id Int @unique
   access_tokens   AccessToken @relation(fields: [access_token_id], references: [id], onDelete: Cascade)
 
   @@map("refresh_tokens")
