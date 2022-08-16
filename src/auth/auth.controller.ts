@@ -14,7 +14,12 @@ import { ApiController } from '../common/controllers/api.controller';
 import { CreateUserDto } from '../user/dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './decorator';
-import { AuthRequest, CheckEmailResponse, CheckEmailRequest } from './dto';
+import {
+  AuthRequest,
+  CheckEmailResponse,
+  CheckEmailRequest,
+  ResendVerificationMailRequest
+} from './dto';
 import { JwtGuard } from './guard';
 
 @Controller({
@@ -79,5 +84,14 @@ export class AuthController extends ApiController {
       return this.successResponse(isVerified, 'Email Verified Successfully');
     }
     return this.errorResponse(isVerified, 'Email Already Verified');
+  }
+
+  @Post('resend-verification-mail')
+  @HttpCode(HttpStatus.OK)
+  async resendVerificationMail(@Body() dto: ResendVerificationMailRequest) {
+    return this.successResponse(
+      await this.authService.resendVerificationMail(dto.email),
+      'Si su correo existe, se le ha enviado un correo de verificación',
+    );
   }
 }

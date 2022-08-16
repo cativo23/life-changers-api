@@ -22,7 +22,6 @@ import {
   editFileName,
   imageFileFilter,
 } from '../utils/file-uploading.utils';
-import { Response } from 'express';
 import { ApiController } from '../common/controllers/api.controller';
 
 @Controller({

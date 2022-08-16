@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -10,6 +11,7 @@ import { JwtGuard } from '../auth/guard';
 import { GetUser } from '../auth/decorator';
 import { UserResponse } from './dto';
 import { ApiController } from '../common/controllers/api.controller';
+import { UserService } from './user.service';
 
 @UseGuards(JwtGuard)
 @Controller({
@@ -17,6 +19,10 @@ import { ApiController } from '../common/controllers/api.controller';
   version: '1',
 })
 export class UserController extends ApiController {
+  constructor(private userService: UserService) {
+    super();
+  }
+
   @HttpCode(HttpStatus.OK)
   @Get('me')
   me(@GetUser() user: User) {

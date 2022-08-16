@@ -5,7 +5,7 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 
 export interface Response<T> {
   status: string;
@@ -32,13 +32,20 @@ export class ApiResponse<T> implements NestInterceptor<T, Response<T>> {
     }
 
     return next.handle().pipe(
+      catchError(async (err) => ({
+        status: 'error',
+        status_code: err.status,
+        message: err.message,
+        data: err,
+        meta: null,
+      })),
       map((response) => ({
         status: response.status,
-        status_code: context.switchToHttp().getResponse().statusCode,
+        status_code: response.status_code|| context.switchToHttp().getResponse().statusCode,
         message: response.message || '',
         data: response.data?.data || response.data,
         meta: response.data?.meta,
-      })),
+      }))
     );
   }
 

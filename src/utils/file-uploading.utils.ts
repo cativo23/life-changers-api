@@ -1,3 +1,4 @@
+import { existsSync, mkdir } from 'fs';
 import { extname } from 'path';
 
 export const imageFileFilter = (req, file, callback) => {
@@ -14,11 +15,51 @@ export const editFileName = (req, file, callback) => {
     .fill(null)
     .map(() => Math.round(Math.random() * 16).toString(16))
     .join('');
-  callback(null, `${name}-${randomName}${fileExtName}`);
+
+  let fileName = `${name}-${randomName}${fileExtName}`;
+
+  switch (file.fieldname) {
+    case 'tax_back':
+      fileName = `tax_document_back_${req.user.first_name}_${req.user.last_name}${fileExtName}`;
+      break;
+    case 'tax_front':
+      fileName = `tax_document_front_${req.user.first_name}_${req.user.last_name}${fileExtName}`;
+      break;
+    case 'id_back':
+      fileName = `id_document_back_${req.user.first_name}_${req.user.last_name}${fileExtName}`;
+      break;
+    case 'id_front':
+      fileName = `id_document_front_${req.user.first_name}_${req.user.last_name}${fileExtName}`;
+      break;
+  }
+  
+  callback(null, fileName);
 };
 
 export const destinationPath = (req, file, callback) => {
   const nameRoute = req.route.path.replace(':id', '');
-  let savePath = './files/' + nameRoute;
+
+  const arrayPath = nameRoute.split('/');
+  let savePath = '';
+
+  switch (arrayPath[3]) {
+    case 'documents-images':
+      arrayPath.splice(4, 1);
+      savePath = './files' + arrayPath.join('/') + '/' + req.user.id;
+      break;
+
+    default:
+      savePath = './files/' + nameRoute;
+      break;
+  }
+
+  if (!existsSync(savePath)) {
+    mkdir(savePath, {
+      recursive: true
+    }, err => callback(err, savePath)
+    );
+  }
+
   callback(null, savePath);
 };
+

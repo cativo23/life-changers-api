@@ -78,21 +78,26 @@ export class AuthService {
   }
 
   async resendVerificationMail(
-    name: string,
-    email: string,
-    userId: number,
-  ): Promise<void> {
+    userEmail: string,
+  ): Promise<Boolean> {
+    // Find user
+    const user = await this.user.findOne({ email: userEmail });
+
+    if (user === null) {
+      return true;
+    }
+
     // delete old email verification tokens if exist
     const deletePrevEmailVerificationIfExist =
       this.prisma.emailVerificationTokens.deleteMany({
-        where: { userId },
+        where: { userId: user.id },
       });
 
     const token = nanoid();
 
     const createEmailVerification = this.prisma.emailVerificationTokens.create({
       data: {
-        userId,
+        userId: user.id,
         token,
         validUntil: moment().add(1, 'days').toISOString(),
       },
@@ -104,7 +109,9 @@ export class AuthService {
       createEmailVerification,
     ]);
 
-    await this.mailSender.sendVerifyEmailMail(name, email, token);
+    await this.mailSender.sendVerifyEmailMail(user.first_name, user.email, token);
+
+    return true;
   }
 
   async verifyEmail(token: string): Promise<Boolean> {
@@ -138,7 +145,7 @@ export class AuthService {
       return true;
     } else {
       Logger.log(`Verify email called with invalid email token ${token}`);
-      throw new NotFoundException();
+      return false;
     }
   }
 

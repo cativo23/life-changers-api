@@ -67,7 +67,7 @@ export class LandingImagesService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<LandingImages> {
     try {
       const previous = await this.prisma.landingImages.findFirst({
         where: {

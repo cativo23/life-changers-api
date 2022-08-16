@@ -14,9 +14,12 @@ import { SiteInfoModule } from './site-info/site-info.module';
 import { TeamMembersModule } from './team-members/team-members.module';
 import { MailSenderModule } from './mail-sender/mail-sender.module';
 import { SiteStatModule } from './site-stat/site-stat.module';
+import { AdminModule } from './admin/admin.module';
+import { DocumentImageModule } from './document-image/document-image.module';
 
 @Module({
   imports: [
+    AdminModule,
     AuthModule,
     UserModule,
     PrismaModule,
@@ -32,6 +35,7 @@ import { SiteStatModule } from './site-stat/site-stat.module';
     TeamMembersModule,
     MailSenderModule,
     SiteStatModule,
+    DocumentImageModule,
   ],
   controllers: [HomeController, ImagesControllerController],
   providers: [],

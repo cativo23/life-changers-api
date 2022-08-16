@@ -10,6 +10,7 @@ export class ApiController {
   public errorResponse(data: any, message: string = 'Error'): any {
     return {
       status: 'error',
+      'status_code': data.status,
       message: message,
       data: data,
     };
